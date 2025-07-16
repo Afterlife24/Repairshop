@@ -98,6 +98,17 @@ const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome 
     }
   ];
 
+  // Get device emoji for model selection
+  const getDeviceEmoji = (type: string) => {
+    switch(type) {
+      case 'mobile': return '📱';
+      case 'tablet': return '📱';
+      case 'laptop': return '💻';
+      case 'console': return '🎮';
+      default: return '📱';
+    }
+  };
+
   // State initialization
   const [currentStep, setCurrentStep] = useState(deviceType ? 2 : 1);
   const [selectedDevice, setSelectedDevice] = useState<Device | null>(
@@ -132,8 +143,6 @@ const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome 
     '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00'
   ];
 
-
-  
   // Fetch brands when subtype is selected
   useEffect(() => {
     if (selectedSubtype) {
@@ -141,7 +150,6 @@ const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome 
         setIsLoading(prev => ({ ...prev, brands: true }));
         setError(null);
         try {
-          // Determine the correct category based on subtype
           let category;
           switch(selectedSubtype.id) {
             case 'mobile':
@@ -176,47 +184,46 @@ const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome 
   }, [selectedSubtype]);
 
   // Fetch repair documents (models) for selected brand and subtype
-  // Fetch repair documents (models) for selected brand and subtype
-useEffect(() => {
-  if (selectedBrand && selectedSubtype) {
-    const fetchRepairDocs = async () => {
-      setIsLoading(prev => ({ ...prev, models: true }));
-      setError(null);
-      try {
-        let endpoint = '';
-        switch(selectedSubtype.id) {
-          case 'mobile':
-            endpoint = 'mobiles';
-            break;
-          case 'tablet':
-            endpoint = 'tablets';
-            break;
-          case 'laptop':
-            endpoint = 'laptops';
-            break;
-          case 'console':
-            endpoint = 'consoles';
-            break;
-          default:
-            throw new Error('Invalid subtype');
-        }
+  useEffect(() => {
+    if (selectedBrand && selectedSubtype) {
+      const fetchRepairDocs = async () => {
+        setIsLoading(prev => ({ ...prev, models: true }));
+        setError(null);
+        try {
+          let endpoint = '';
+          switch(selectedSubtype.id) {
+            case 'mobile':
+              endpoint = 'mobiles';
+              break;
+            case 'tablet':
+              endpoint = 'tablets';
+              break;
+            case 'laptop':
+              endpoint = 'laptops';
+              break;
+            case 'console':
+              endpoint = 'consoles';
+              break;
+            default:
+              throw new Error('Invalid subtype');
+          }
 
-        const response = await fetch(
-          `${API_BASE_URL}/repairs/${endpoint}?brand=${encodeURIComponent(selectedBrand.name)}`
-        );
-        if (!response.ok) throw new Error('Failed to fetch models');
-        const data = await response.json();
-        setRepairDocs(data);
-      } catch (err) {
-        setError('Failed to load models');
-        console.error(err);
-      } finally {
-        setIsLoading(prev => ({ ...prev, models: false }));
-      }
-    };
-    fetchRepairDocs();
-  }
-}, [selectedBrand, selectedSubtype]);
+          const response = await fetch(
+            `${API_BASE_URL}/repairs/${endpoint}?brand=${encodeURIComponent(selectedBrand.name)}`
+          );
+          if (!response.ok) throw new Error('Failed to fetch models');
+          const data = await response.json();
+          setRepairDocs(data);
+        } catch (err) {
+          setError('Failed to load models');
+          console.error(err);
+        } finally {
+          setIsLoading(prev => ({ ...prev, models: false }));
+        }
+      };
+      fetchRepairDocs();
+    }
+  }, [selectedBrand, selectedSubtype]);
 
   // Handle window resize
   useEffect(() => {
@@ -259,20 +266,10 @@ useEffect(() => {
     return total + (service ? service.estimatedCost : 0);
   }, 0);
 
-  // Navigation functions
-  // const nextStep = () => {
-  //   const maxSteps = 6;
-  //   if (currentStep < maxSteps) setCurrentStep(currentStep + 1);
-  // };
-
-
-
   useEffect(() => {
-    // Initialize history state
     window.history.pushState({ step: currentStep }, '');
 
     const handlePopState = (event) => {
-      // Prevent default back behavior
       if (currentStep > 1) {
         prevStep();
       }
@@ -283,10 +280,7 @@ useEffect(() => {
     return () => {
       window.removeEventListener('popstate', handlePopState);
     };
-  }, [currentStep]); // Re-run effect when currentStep changes
-
-
-
+  }, [currentStep]);
 
   const prevStep = () => {
     if (currentStep > 1) {
@@ -325,14 +319,11 @@ useEffect(() => {
     }
   };
 
-
-    const nextStep = () => {
+  const nextStep = () => {
     if (currentStep < 6) {
       const newStep = currentStep + 1;
       setCurrentStep(newStep);
       setSearchTerm('');
-      
-      // Push new state to history
       window.history.pushState({ step: newStep }, '');
     }
   };
@@ -392,7 +383,6 @@ useEffect(() => {
       
       const data = await response.json();
       console.log('Appointment created:', data);
-      // Here you would typically show a success message and/or redirect
       
     } catch (err) {
       setError('Failed to create appointment');
@@ -402,7 +392,6 @@ useEffect(() => {
     }
   };
 
-  // Render functions
   const renderStepIndicator = () => {
     const steps = Array.from({ length: 6 }, (_, i) => i + 1);
     
@@ -484,7 +473,6 @@ useEffect(() => {
   return (
     <section className="py-6 sm:py-8 md:py-12 bg-gray-900 min-h-screen">
       <div className="container mx-auto px-4 max-w-6xl">
-        {/* Error Message */}
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -20 }}
@@ -495,7 +483,6 @@ useEffect(() => {
           </motion.div>
         )}
 
-        {/* Back to Home Button */}
         {onBackToHome && (
           <motion.div 
             initial={{ opacity: 0 }}
@@ -513,7 +500,6 @@ useEffect(() => {
           </motion.div>
         )}
 
-        {/* Device Type Header */}
         {selectedDevice && (
           <motion.div 
             initial={{ opacity: 0, y: -20 }}
@@ -536,8 +522,8 @@ useEffect(() => {
         {renderStepIndicator()}
         {renderStepLabels()}
 
-        {/* Step 1: Device Selection */}
         <AnimatePresence mode="wait">
+          {/* Step 1: Device Selection */}
           {currentStep === 1 && !deviceType && (
             <motion.div
               key="step1"
@@ -643,7 +629,7 @@ useEffect(() => {
             </motion.div>
           )}
 
-          {/* Step 3: Brand Selection */}
+          {/* Step 3: Brand Selection (with brand logos) */}
           {currentStep === 3 && (
             <motion.div
               key="step3-brand"
@@ -708,17 +694,18 @@ useEffect(() => {
                         }}
                         className="bg-gray-800 hover:bg-gray-700 border-2 border-gray-700 hover:border-yellow-400 rounded-lg md:rounded-xl p-3 sm:p-4 md:p-6 transition-all duration-300 group"
                       >
-                        <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 md:mb-4">
-                          {/* {brand.name.charAt(0).toUpperCase()} */}
-
-                          <img
-                          
-                            src={`././assests/mobile_brands/${brand.name.toLowerCase()}.png`}
-                            alt={brand.name}
-                            className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 object-contain mx-auto mb-2"
-                          />
-
-                        </div>
+                        <img
+                          src={`./assests/mobile_brands/${brand.name.toLowerCase()}.png`}
+                          alt={brand.name}
+                          className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 object-contain mx-auto mb-2"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            const fallback = document.createElement('div');
+                            fallback.className = 'text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 md:mb-4';
+                            fallback.textContent = brand.name.charAt(0).toUpperCase();
+                            (e.target as HTMLImageElement).parentNode?.insertBefore(fallback, e.target.nextSibling);
+                          }}
+                        />
                         <h3 className="text-xs sm:text-sm md:text-lg font-semibold text-white">{brand.name}</h3>
                       </motion.button>
                     ))}
@@ -742,7 +729,7 @@ useEffect(() => {
             </motion.div>
           )}
 
-          {/* Step 4: Model Selection (now filtered by brand) */}
+          {/* Step 4: Model Selection (with emoji icons) */}
           {currentStep === 4 && (
             <motion.div
               key="step4-model"
@@ -804,8 +791,8 @@ useEffect(() => {
                         onClick={() => handleModelSelection(repairDoc)}
                         className="bg-gray-800 hover:bg-gray-700 border-2 border-gray-700 hover:border-yellow-400 rounded-lg p-2 sm:p-3 md:p-4 transition-all duration-300 group"
                       >
-                        <div className="text-2xl sm:text-3xl md:text-4xl mb-1 sm:mb-2 md:mb-3">
-                          {repairDoc.brand.charAt(0).toUpperCase()}
+                        <div className="text-4xl mb-1 sm:mb-2 md:mb-3">
+                          {selectedSubtype && getDeviceEmoji(selectedSubtype.id)}
                         </div>
                         <h3 className="text-xs sm:text-sm font-semibold text-white text-center line-clamp-2 mb-1">
                           {repairDoc.model}
