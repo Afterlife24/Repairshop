@@ -37,7 +37,7 @@ jobs:
       - name: Upload assets folder to S3 under /assets
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
-          args: --delete
+          args: ""
         env:
           AWS_S3_BUCKET: ${{ secrets.S3_BUCKET }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
