@@ -41,8 +41,8 @@ const fetchProducts = useCallback(async () => {
     setError(null);
     
     const endpoint = type === 'mobile' 
-      ? 'http://localhost:5000/api/products/mobile' 
-      : 'http://localhost:5000/api/products/laptop';
+      ? 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/mobile' 
+      : 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/laptop';
 
     console.log("yesss")
     
@@ -64,7 +64,7 @@ const fetchProducts = useCallback(async () => {
       ...product,
       image: product.image.startsWith('http') 
         ? product.image 
-        : `http://localhost:5000${product.image}`
+        : `https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com${product.image}`
     }));
     
     setProducts(processedProducts);

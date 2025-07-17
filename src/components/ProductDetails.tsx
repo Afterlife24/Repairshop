@@ -31,7 +31,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
   const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>('description');
 
   // Base server URL for serving image path
-  const serverUrl = 'http://localhost:5000'; // or import.meta.env.VITE_API_URL
+  const serverUrl = 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com'; // or import.meta.env.VITE_API_URL
 
   const productImages = [
     `${serverUrl}${product.image}`, // dynamically load from backend
