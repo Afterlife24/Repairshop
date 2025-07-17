@@ -328,69 +328,150 @@ const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome 
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault();
     
-    if (!appointmentData.date || !appointmentData.time || !appointmentData.name || !appointmentData.email) {
-      setError('Please fill all required fields');
-      return;
-    }
+  //   if (!appointmentData.date || !appointmentData.time || !appointmentData.name || !appointmentData.email) {
+  //     setError('Please fill all required fields');
+  //     return;
+  //   }
 
-    if (!selectedRepairDoc) {
-      setError('No repair document selected');
-      return;
-    }
+  //   if (!selectedRepairDoc) {
+  //     setError('No repair document selected');
+  //     return;
+  //   }
 
-    setIsLoading(prev => ({ ...prev, submitting: true }));
+  //   setIsLoading(prev => ({ ...prev, submitting: true }));
+  //   setError(null);
+
+  //   try {
+  //     const appointmentPayload = {
+  //       deviceType: selectedDevice?.type,
+  //       subtype: selectedSubtype?.id,
+  //       brand: selectedBrand?.name,
+  //       model: selectedRepairDoc.model,
+  //       services: selectedServices.map(id => {
+  //         const service = selectedRepairDoc.repairOptions.find(s => s._id === id);
+  //         return {
+  //           id,
+  //           name: service?.name,
+  //           price: service?.estimatedCost
+  //         };
+  //       }),
+  //       totalPrice,
+  //       customer: {
+  //         name: appointmentData.name,
+  //         firstName: appointmentData.firstName,
+  //         email: appointmentData.email,
+  //         phone: appointmentData.phone
+  //       },
+  //       appointment: {
+  //         date: appointmentData.date,
+  //         time: appointmentData.time
+  //       }
+  //     };
+
+  //     const response = await fetch(`${API_BASE_URL}/appointments`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(appointmentPayload),
+  //     });
+
+  //     if (!response.ok) throw new Error('Failed to create appointment');
+      
+  //     const data = await response.json();
+  //     console.log('Appointment created:', data);
+      
+  //   } catch (err) {
+  //     setError('Failed to create appointment');
+  //     console.error(err);
+  //   } finally {
+  //     setIsLoading(prev => ({ ...prev, submitting: false }));
+  //   }
+  // };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  // Validate required fields
+  if (!appointmentData.date || !appointmentData.time || !appointmentData.name || !appointmentData.email) {
+    setError('Veuillez remplir tous les champs obligatoires');
+    return;
+  }
+
+  if (!selectedRepairDoc) {
+    setError('Aucun document de réparation sélectionné');
+    return;
+  }
+
+  setIsLoading(prev => ({ ...prev, submitting: true }));
+  setError(null);
+
+  try {
+    const appointmentPayload = {
+      deviceType: selectedDevice?.type,
+      deviceName: selectedDevice?.name,
+      subtype: selectedSubtype?.id,
+      subtypeName: selectedSubtype?.name,
+      brand: selectedBrand?.name,
+      model: selectedRepairDoc.model,
+      services: selectedServices.map(id => {
+        const service = selectedRepairDoc.repairOptions.find(s => s._id === id);
+        return {
+          id,
+          name: service?.name,
+          price: service?.estimatedCost,
+          description: service?.description
+        };
+      }),
+      totalPrice,
+      customer: {
+        name: appointmentData.name,
+        firstName: appointmentData.firstName,
+        email: appointmentData.email,
+        phone: appointmentData.phone
+      },
+      appointment: {
+        date: appointmentData.date,
+        time: appointmentData.time
+      },
+      createdAt: new Date().toISOString()
+    };
+
+    const response = await fetch(`${API_BASE_URL}/appointments`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(appointmentPayload),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Échec de la création du rendez-vous');
+    }
+    
+    const data = await response.json();
+    console.log('Rendez-vous créé:', data);
+    
+    // Here you can add a success message and redirect or reset the form
     setError(null);
+    alert('Votre rendez-vous a été confirmé avec succès!');
+    
+    // Optionally reset the form or redirect
+    // resetForm();
+    
+  } catch (err) {
+    setError(err.message || 'Échec de la création du rendez-vous');
+    console.error('Erreur:', err);
+  } finally {
+    setIsLoading(prev => ({ ...prev, submitting: false }));
+  }
+};
 
-    try {
-      const appointmentPayload = {
-        deviceType: selectedDevice?.type,
-        subtype: selectedSubtype?.id,
-        brand: selectedBrand?.name,
-        model: selectedRepairDoc.model,
-        services: selectedServices.map(id => {
-          const service = selectedRepairDoc.repairOptions.find(s => s._id === id);
-          return {
-            id,
-            name: service?.name,
-            price: service?.estimatedCost
-          };
-        }),
-        totalPrice,
-        customer: {
-          name: appointmentData.name,
-          firstName: appointmentData.firstName,
-          email: appointmentData.email,
-          phone: appointmentData.phone
-        },
-        appointment: {
-          date: appointmentData.date,
-          time: appointmentData.time
-        }
-      };
-
-      const response = await fetch(`${API_BASE_URL}/appointments`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(appointmentPayload),
-      });
-
-      if (!response.ok) throw new Error('Failed to create appointment');
-      
-      const data = await response.json();
-      console.log('Appointment created:', data);
-      
-    } catch (err) {
-      setError('Failed to create appointment');
-      console.error(err);
-    } finally {
-      setIsLoading(prev => ({ ...prev, submitting: false }));
-    }
-  };
+  
 
   const renderStepIndicator = () => {
     const steps = Array.from({ length: 6 }, (_, i) => i + 1);
@@ -1092,7 +1173,7 @@ const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome 
                       </div>
                       <div>
                         <label className="block text-white text-xs sm:text-sm font-medium mb-1">
-                          Prénom <span className="text-red-500">*</span>
+                          Prénom
                         </label>
                         <div className="relative">
                           <User className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-3 w-3 sm:h-4 sm:w-4" />
@@ -1101,7 +1182,6 @@ const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome 
                             value={appointmentData.firstName}
                             onChange={(e) => setAppointmentData({...appointmentData, firstName: e.target.value})}
                             className="w-full pl-7 sm:pl-10 pr-2 sm:pr-3 py-1.5 sm:py-2 text-xs sm:text-sm bg-gray-700 border border-gray-600 rounded-lg text-white focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                            required
                           />
                         </div>
                       </div>
@@ -1148,7 +1228,7 @@ const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome 
                         <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
                         <span>Retour</span>
                       </button>
-                      <button
+                      {/* <button
                         type="submit"
                         disabled={isLoading.submitting}
                         className={`bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-3 py-2 sm:px-4 sm:py-2 md:px-8 md:py-3 rounded-lg font-semibold transition-colors w-full sm:w-auto text-xs sm:text-sm md:text-base ${
@@ -1156,7 +1236,16 @@ const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome 
                         }`}
                       >
                         {isLoading.submitting ? 'Processing...' : 'Confirmer le Rendez-vous'}
-                      </button>
+                      </button> */}
+                      <button
+                        type="submit"
+                        disabled={isLoading.submitting}
+                        className={`bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-3 py-2 sm:px-4 sm:py-2 md:px-8 md:py-3 rounded-lg font-semibold transition-colors w-full sm:w-auto text-xs sm:text-sm md:text-base ${
+                          isLoading.submitting ? 'opacity-70 cursor-not-allowed' : ''
+                        }`}
+                      >
+    {isLoading.submitting ? 'Traitement en cours...' : 'Confirmer le Rendez-vous'}
+  </button>
                     </div>
                   </form>
                 </motion.div>
