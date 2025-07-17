@@ -35,34 +35,54 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ type, title, onProduc
 
   const itemsToShow = 4;
 
-  const fetchProducts = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const endpoint = type === 'mobile' 
-        ? 'http://localhost:5000/api/products/mobiles' 
-        : 'http://localhost:5000/api/products/laptops';
-      
-      const response = await fetch(endpoint);
-      
-      if (!response.ok) {
-        throw new Error(`Failed to fetch: ${response.status}`);
+const fetchProducts = useCallback(async () => {
+  try {
+    setLoading(true);
+    setError(null);
+    
+    const endpoint = type === 'mobile' 
+      ? 'http://localhost:5000/api/products/mobile' 
+      : 'http://localhost:5000/api/products/laptop';
+
+    console.log("yesss")
+    
+    const response = await fetch(endpoint, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       }
-      
-      const data = await response.json();
-      setProducts(data);
-    } catch (err) {
-      setError(err.message);
-      setProducts([]);
-    } finally {
-      setLoading(false);
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
     }
-  }, [type]);
+    
+    const data = await response.json();
+    
+    // Ensure image URLs are properly formatted
+    const processedProducts = data.map((product: Product) => ({
+      ...product,
+      image: product.image.startsWith('http') 
+        ? product.image 
+        : `http://localhost:5000${product.image}`
+    }));
+    
+    setProducts(processedProducts);
+  } catch (err) {
+    setError(err.message);
+    console.error('Fetch error:', err);
+    setProducts([]);
+  } finally {
+    setLoading(false);
+  }
+}, [type]);
+
+
 
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
+
 
   useEffect(() => {
     if (!isAutoPlaying || isTransitioning || products.length === 0) return;
@@ -162,6 +182,32 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ type, title, onProduc
     );
   }
 
+  if (error) {
+  return (
+    <div className="error-container">
+      <h3>Error Loading Products</h3>
+      <p>{error}</p>
+      <button 
+        onClick={fetchProducts}
+        className="retry-button"
+      >
+        Retry
+      </button>
+      <details>
+        <summary>Technical Details</summary>
+        <p>Endpoint: {type === 'mobile' ? '/api/products/mobiles' : '/api/products/laptops'}</p>
+        <p>Please check:
+          <ul>
+            <li>Backend server is running</li>
+            <li>Correct endpoint URL</li>
+            <li>Network connection</li>
+          </ul>
+        </p>
+      </details>
+    </div>
+  );
+}
+
   return (
     <div 
       className="relative bg-gradient-to-br from-gray-800/60 via-gray-800/40 to-gray-900/60 backdrop-blur-sm rounded-2xl p-4 sm:p-6 md:p-8 border border-gray-700/50 shadow-2xl"
@@ -210,24 +256,21 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ type, title, onProduc
             const isFavorite = favorites.includes(product.id);
             
             return (
-              <div
-                key={product.id}
-                className="w-full sm:w-1/2 lg:w-1/4 flex-shrink-0 px-2 transition-all duration-500"
-              >
+               <div key={product.id} className="w-full sm:w-1/2 lg:w-1/4 flex-shrink-0 px-2 transition-all duration-500">
                 <div 
-                  className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 rounded-xl p-4 border border-gray-700/50 hover:border-yellow-400/50 transition-all duration-500 hover:scale-105 hover:shadow-2xl group cursor-pointer backdrop-blur-sm"
-                  onClick={() => onProductClick(product)}
-                >
+              className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 rounded-xl p-4 border border-gray-700/50 hover:border-yellow-400/50 transition-all duration-500 hover:scale-105 hover:shadow-2xl group cursor-pointer backdrop-blur-sm"
+              onClick={() => onProductClick(product)}
+            >
                   <div className="relative mb-4 overflow-hidden rounded-lg group">
-                    <img 
-                      src={`http://localhost:5000${product.image}`}
-                      alt={product.name}
-                      className="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-700"
-                      loading="lazy"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=Product+Image';
-                      }}
-                    />
+                <img 
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-700"
+                  loading="lazy"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=Product+Image';
+                  }}
+                />
                     
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3">
                       <button
