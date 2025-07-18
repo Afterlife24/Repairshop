@@ -61,11 +61,9 @@ const fetchProducts = useCallback(async () => {
     
     // Ensure image URLs are properly formatted
     const processedProducts = data.map((product: Product) => ({
-      ...product,
-      image: product.image.startsWith('http') 
-        ? product.image 
-        : `https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com${product.image}`
-    }));
+  ...product,
+  // No need to modify image URL since it's already absolute
+}));
     
     setProducts(processedProducts);
   } catch (err) {
