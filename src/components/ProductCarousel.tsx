@@ -63,9 +63,8 @@ const fetchProducts = useCallback(async () => {
     const processedProducts = data.map((product: Product) => ({
       ...product,
       image: product.image.startsWith('http') 
-  ? product.image 
-  : `https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/${product.image.replace('/api/images/', '')}`
-
+        ? product.image 
+        : `https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com${product.image}`
     }));
     
     setProducts(processedProducts);
