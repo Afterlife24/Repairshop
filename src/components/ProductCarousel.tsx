@@ -64,7 +64,8 @@ const fetchProducts = useCallback(async () => {
       ...product,
       image: product.image.startsWith('http')
   ? product.image
-  : `https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com${product.image}`
+  : `https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com${product.image.startsWith('/') ? '' : '/'}${product.image}`
+
     }));
     
     setProducts(processedProducts);
