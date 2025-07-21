@@ -42,7 +42,7 @@ const fetchProducts = useCallback(async () => {
     
     const endpoint = type === 'mobile' 
       ? 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/mobile' 
-      : 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws./api/products/comlaptop';
+      : 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/laptop';
 
     console.log("yesss")
     
