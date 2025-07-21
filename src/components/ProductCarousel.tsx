@@ -42,7 +42,7 @@ const fetchProducts = useCallback(async () => {
     
     const endpoint = type === 'mobile' 
       ? 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/mobile' 
-      : 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/laptop';
+      : 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws./api/products/comlaptop';
 
     console.log("yesss")
     
@@ -263,14 +263,15 @@ const fetchProducts = useCallback(async () => {
             >
                   <div className="relative mb-4 overflow-hidden rounded-lg group">
                 <img 
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-700"
-                  loading="lazy"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = 'https://via.placeholder.com/300x300?text=Product+Image';
-                  }}
-                />
+  src={product.image}
+  alt={product.name}
+  className="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-700"
+  loading="lazy"
+  onError={(e) => {
+    (e.target as HTMLImageElement).src = 'https://placehold.co/300x300?text=Product+Image';
+  }}
+/>
+
                     
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3">
                       <button
