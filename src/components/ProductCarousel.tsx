@@ -41,8 +41,8 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ type, title, onProduc
 //     setError(null);
     
 //     const endpoint = type === 'mobile' 
-//       ? 'http://localhost:5000/api/products/mobile' 
-//       : 'http://localhost:5000/api/products/laptop';
+//       ? 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/mobile' 
+//       : 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/laptop';
 
 //     console.log("yesss")
     
@@ -85,8 +85,8 @@ const fetchProducts = useCallback(async () => {
     setError(null);
     
     const endpoint = type === 'mobile' 
-      ? 'http://localhost:5000/api/products/mobiles' 
-      : 'http://localhost:5000/api/products/laptops';
+      ? 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/mobiles' 
+      : 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/laptops';
 
     const response = await fetch(endpoint, {
       headers: {
