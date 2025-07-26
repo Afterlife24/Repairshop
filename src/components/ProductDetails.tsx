@@ -13,10 +13,10 @@ interface Product {
   rating: number;
   reviews: number;
   features: string[];
-  specifications: Record<string, string>;
   description: string;
   inStock: boolean;
   category: string;
+  images?: string[];
 }
 
 interface ProductDetailsProps {
@@ -28,17 +28,12 @@ interface ProductDetailsProps {
 const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpen }) => {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isFavorite, setIsFavorite] = useState(false);
-  const [activeTab, setActiveTab] = useState<'description' | 'specifications' | 'reviews'>('description');
+  const [activeTab, setActiveTab] = useState<'description' | 'reviews'>('description');
 
-  // Base server URL for serving image path
-  const serverUrl = 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com'; // or import.meta.env.VITE_API_URL
-
-  const productImages = [
-    `${serverUrl}${product.image}`, // dynamically load from backend
-    'https://images.pexels.com/photos/788946/pexels-photo-788946.jpeg?auto=compress&cs=tinysrgb&w=600',
-    'https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=600',
-    'https://images.pexels.com/photos/1092644/pexels-photo-1092644.jpeg?auto=compress&cs=tinysrgb&w=600'
-  ];
+  // Use only the product's images (no static fallbacks)
+  const productImages = product.images && product.images.length > 0 
+    ? product.images 
+    : [product.image]; // Fallback to main image if no additional images
 
   const renderStars = (rating: number) => {
     return Array.from({ length: 5 }, (_, i) => (
@@ -59,6 +54,14 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
     } else {
       navigator.clipboard.writeText(window.location.href);
     }
+  };
+
+  const nextImage = () => {
+    setSelectedImageIndex((prev) => (prev + 1) % productImages.length);
+  };
+
+  const prevImage = () => {
+    setSelectedImageIndex((prev) => (prev - 1 + productImages.length) % productImages.length);
   };
 
   if (!isOpen) return null;
@@ -100,23 +103,36 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
                   <img
                     src={productImages[selectedImageIndex]}
                     alt={product.name}
-                    className="w-full h-full object-cover"
-                    onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/400x400?text=Image+Not+Found")}
+                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      e.currentTarget.src = "https://via.placeholder.com/500x500?text=Image+Not+Available";
+                      e.currentTarget.className = "w-full h-full object-cover";
+                    }}
                   />
 
                   {/* Image Navigation */}
-                  <button
-                    onClick={() => setSelectedImageIndex(prev => prev === 0 ? productImages.length - 1 : prev - 1)}
-                    className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 rounded-full"
-                  >
-                    <ChevronLeft className="h-4 w-4 text-white" />
-                  </button>
-                  <button
-                    onClick={() => setSelectedImageIndex(prev => prev === productImages.length - 1 ? 0 : prev + 1)}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 rounded-full"
-                  >
-                    <ChevronRight className="h-4 w-4 text-white" />
-                  </button>
+                  {productImages.length > 1 && (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          prevImage();
+                        }}
+                        className="absolute left-2 top-1/2 transform -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 rounded-full"
+                      >
+                        <ChevronLeft className="h-5 w-5 text-white" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          nextImage();
+                        }}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 rounded-full"
+                      >
+                        <ChevronRight className="h-5 w-5 text-white" />
+                      </button>
+                    </>
+                  )}
 
                   {/* Badges */}
                   <div className="absolute top-4 left-4 flex flex-col space-y-2">
@@ -130,6 +146,32 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
                     </span>
                   </div>
                 </div>
+
+                {/* Thumbnail Gallery */}
+                {productImages.length > 1 && (
+                  <div className="flex space-x-2 overflow-x-auto py-2">
+                    {productImages.map((img, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setSelectedImageIndex(index)}
+                        className={`flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-all ${
+                          selectedImageIndex === index
+                            ? 'border-yellow-400'
+                            : 'border-transparent hover:border-gray-500'
+                        }`}
+                      >
+                        <img
+                          src={img}
+                          alt={`${product.name} thumbnail ${index + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            e.currentTarget.src = "https://via.placeholder.com/100x100?text=Image+Not+Available";
+                          }}
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Product Info */}
@@ -140,7 +182,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
                     {renderStars(product.rating)}
                   </div>
                   <span className="text-gray-400 text-sm">
-                    {product.rating} ({product.reviews} avis)
+                    {product.rating} ({product.reviews} reviews)
                   </span>
                 </div>
 
@@ -153,13 +195,13 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
                     )}
                   </div>
                   <p className="text-green-400 text-sm font-medium">
-                    ✓ En stock • Livraison gratuite • Garantie 2 ans
+                    {product.inStock ? '✓ In Stock' : 'Out of Stock'} • Free Shipping • 2 Year Warranty
                   </p>
                 </div>
 
                 {/* Features */}
                 <div>
-                  <h3 className="text-white font-semibold mb-3">Caractéristiques principales</h3>
+                  <h3 className="text-white font-semibold mb-3">Key Features</h3>
                   <div className="flex flex-wrap gap-2">
                     {product.features.map((feature, index) => (
                       <span
@@ -179,7 +221,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
                     className="flex-1 border border-gray-600 hover:border-yellow-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
                   >
                     <Heart className={`h-5 w-5 ${isFavorite ? 'text-red-400 fill-current' : 'text-gray-400'}`} />
-                    <span>{isFavorite ? 'Retiré des favoris' : 'Ajouter aux favoris'}</span>
+                    <span>{isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}</span>
                   </button>
                   <button
                     onClick={handleShare}
@@ -191,16 +233,16 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
 
                 {/* Contact */}
                 <div className="bg-gradient-to-r from-yellow-400/10 to-yellow-500/10 border border-yellow-400/30 rounded-lg p-4">
-                  <h4 className="text-yellow-400 font-semibold mb-2">Intéressé par ce produit ?</h4>
+                  <h4 className="text-yellow-400 font-semibold mb-2">Interested in this product?</h4>
                   <p className="text-gray-300 text-sm mb-3">
-                    Contactez-nous pour plus d'informations ou pour passer commande
+                    Contact us for more information or to place an order
                   </p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     <button className="flex-1 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold py-2 px-4 rounded-lg text-sm">
-                      Nous contacter
+                      Contact Us
                     </button>
                     <button className="flex-1 border border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-gray-900 font-semibold py-2 px-4 rounded-lg text-sm">
-                      Demander un devis
+                      Get a Quote
                     </button>
                   </div>
                 </div>
@@ -209,24 +251,24 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
                 <div className="grid grid-cols-3 gap-4 py-4 border-t border-gray-700">
                   <div className="text-center">
                     <Truck className="h-6 w-6 text-yellow-400 mx-auto mb-2" />
-                    <p className="text-xs text-gray-400">Livraison gratuite</p>
+                    <p className="text-xs text-gray-400">Free Shipping</p>
                   </div>
                   <div className="text-center">
                     <Shield className="h-6 w-6 text-yellow-400 mx-auto mb-2" />
-                    <p className="text-xs text-gray-400">Garantie 2 ans</p>
+                    <p className="text-xs text-gray-400">2 Year Warranty</p>
                   </div>
                   <div className="text-center">
                     <RotateCcw className="h-6 w-6 text-yellow-400 mx-auto mb-2" />
-                    <p className="text-xs text-gray-400">Retour 30 jours</p>
+                    <p className="text-xs text-gray-400">30 Day Returns</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Tabs */}
+            {/* Tabs - Removed specifications */}
             <div className="border-t border-gray-700">
               <div className="flex space-x-8 px-4 sm:px-6">
-                {['description', 'specifications', 'reviews'].map((tab) => (
+                {['description', 'reviews'].map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab as any)}
@@ -236,7 +278,7 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
                         : 'border-transparent text-gray-400 hover:text-white'
                     }`}
                   >
-                    {tab === 'description' ? 'Description' : tab === 'specifications' ? 'Spécifications' : 'Avis'}
+                    {tab === 'description' ? 'Description' : 'Reviews'}
                   </button>
                 ))}
               </div>
@@ -248,28 +290,17 @@ const ProductDetails: React.FC<ProductDetailsProps> = ({ product, onClose, isOpe
                   </div>
                 )}
 
-                {activeTab === 'specifications' && (
-                  <div className="space-y-3">
-                    {Object.entries(product.specifications).map(([key, value]) => (
-                      <div key={key} className="flex justify-between py-3 border-b border-gray-800">
-                        <span className="text-gray-400 font-medium">{key}</span>
-                        <span className="text-white font-medium text-right">{value}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
                 {activeTab === 'reviews' && (
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
-                      <h4 className="text-white font-semibold">Avis clients</h4>
+                      <h4 className="text-white font-semibold">Customer Reviews</h4>
                       <div className="flex items-center space-x-2">
                         {renderStars(product.rating)}
-                        <span className="text-gray-400 text-sm">{product.rating}/5 ({product.reviews} avis)</span>
+                        <span className="text-gray-400 text-sm">{product.rating}/5 ({product.reviews} reviews)</span>
                       </div>
                     </div>
                     <div className="text-gray-400 text-center py-8">
-                      <p>Les avis clients seront affichés ici</p>
+                      <p>Customer reviews will be displayed here</p>
                     </div>
                   </div>
                 )}

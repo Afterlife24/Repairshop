@@ -35,17 +35,59 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ type, title, onProduc
 
   const itemsToShow = 4;
 
+// const fetchProducts = useCallback(async () => {
+//   try {
+//     setLoading(true);
+//     setError(null);
+    
+//     const endpoint = type === 'mobile' 
+//       ? 'http://localhost:5000/api/products/mobile' 
+//       : 'http://localhost:5000/api/products/laptop';
+
+//     console.log("yesss")
+    
+//     const response = await fetch(endpoint, {
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Accept': 'application/json'
+//       }
+//     });
+    
+//     if (!response.ok) {
+//       throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+//     }
+    
+//     const data = await response.json();
+    
+//     // Ensure image URLs are properly formatted
+//     const processedProducts = data.map((product: Product) => ({
+//       ...product,
+//       image: product.image.startsWith('http')
+//   ? product.image
+//   : `https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com${product.image.startsWith('/') ? '' : '/'}${product.image}`
+
+//     }));
+    
+//     setProducts(processedProducts);
+//   } catch (err) {
+//     setError(err.message);
+//     console.error('Fetch error:', err);
+//     setProducts([]);
+//   } finally {
+//     setLoading(false);
+//   }
+// }, [type]);
+
+
 const fetchProducts = useCallback(async () => {
   try {
     setLoading(true);
     setError(null);
     
     const endpoint = type === 'mobile' 
-      ? 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/mobile' 
-      : 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/laptop';
+      ? 'http://localhost:5000/api/products/mobiles' 
+      : 'http://localhost:5000/api/products/laptops';
 
-    console.log("yesss")
-    
     const response = await fetch(endpoint, {
       headers: {
         'Content-Type': 'application/json',
@@ -59,17 +101,9 @@ const fetchProducts = useCallback(async () => {
     
     const data = await response.json();
     
-    // Ensure image URLs are properly formatted
-    const processedProducts = data.map((product: Product) => ({
-      ...product,
-      image: product.image.startsWith('http')
-  ? product.image
-  : `https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com${product.image.startsWith('/') ? '' : '/'}${product.image}`
-
-    }));
-    
-    setProducts(processedProducts);
-  } catch (err) {
+    // No need to change image URL
+    setProducts(data);
+  } catch (err: any) {
     setError(err.message);
     console.error('Fetch error:', err);
     setProducts([]);
@@ -77,6 +111,7 @@ const fetchProducts = useCallback(async () => {
     setLoading(false);
   }
 }, [type]);
+
 
 
 
@@ -263,15 +298,16 @@ const fetchProducts = useCallback(async () => {
               onClick={() => onProductClick(product)}
             >
                   <div className="relative mb-4 overflow-hidden rounded-lg group">
-                <img 
+<img 
   src={product.image}
   alt={product.name}
   className="w-full h-40 sm:h-48 object-cover group-hover:scale-110 transition-transform duration-700"
   loading="lazy"
   onError={(e) => {
-    (e.target as HTMLImageElement).src = 'https://placehold.co/300x300?text=Product+Image';
+    (e.target as HTMLImageElement).src = 'https://placehold.co/300x300?text=No+Image';
   }}
 />
+
 
                     
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3">
