@@ -418,10 +418,21 @@ const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome 
       setShowSuccessPopup(true);
       
       // Reset form after 3 seconds
-      setTimeout(() => {
-        setShowSuccessPopup(false);
-        resetForm();
-      }, 3000);
+      // In the handleSubmit function, modify the setTimeout callback:
+setTimeout(() => {
+  setShowSuccessPopup(false);
+  // Instead of resetForm(), just go back to step 1 or 2
+  setCurrentStep(deviceType ? 2 : 1);
+  setSelectedServices([]);
+  setAppointmentData({
+    date: '',
+    time: '',
+    name: '',
+    firstName: '',
+    email: '',
+    phone: ''
+  });
+}, 3000);
       
     } catch (err) {
       setError(err.message || 'Échec de la création du rendez-vous');
