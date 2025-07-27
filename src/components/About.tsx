@@ -14,7 +14,7 @@ const About = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-8 sm:mb-10 md:mb-16">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4 px-4">
-            Pourquoi Choisir <span className="text-yellow-400">Smar</span> ?
+            Pourquoi Choisir <span className="text-yellow-400">Smartphonecity</span> ?
           </h2>
           <p className="text-base sm:text-lg text-gray-300 max-w-2xl mx-auto px-4">
             Vos experts technologiques locaux de confiance avec plus de 10 ans d'expérience 
