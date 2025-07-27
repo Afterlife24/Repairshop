@@ -12,7 +12,7 @@ const Footer = () => {
               <div className="bg-yellow-400 p-1.5 sm:p-2 rounded-lg">
                 <Smartphone className="h-5 w-5 sm:h-6 sm:w-6 text-gray-900" />
               </div>
-              <h3 className="text-lg sm:text-xl md:text-2xl font-bold">TechFix Pro</h3>
+              <h3 className="text-lg sm:text-xl md:text-2xl font-bold">Smartphonecity</h3>
             </div>
             <p className="text-gray-300 mb-3 sm:mb-4 md:mb-6 max-w-md text-xs sm:text-sm md:text-base">
               Vos experts technologiques locaux de confiance fournissant des services de réparation 
@@ -60,7 +60,7 @@ const Footer = () => {
         <div className="border-t border-gray-800 mt-6 sm:mt-8 md:mt-12 pt-4 sm:pt-6 md:pt-8">
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
             <p className="text-gray-400 text-xs sm:text-sm text-center sm:text-left">
-              © 2024 TechFix Pro. Tous droits réservés.
+              © 2024 Smartphonecity. Tous droits réservés.
             </p>
             <div className="flex flex-wrap justify-center sm:justify-end space-x-3 sm:space-x-4 md:space-x-6 text-xs sm:text-sm">
               <a href="#" className="text-gray-400 hover:text-yellow-400 transition-colors">Politique de Confidentialité</a>

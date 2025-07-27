@@ -14,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ onBackToHome }) => {
 
   const handleBookRepair = () => {
     // Navigate to booking flow
-    window.location.hash = '#booking';
+    window.location.hash = '#home';
     setIsMenuOpen(false);
   };
 
@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({ onBackToHome }) => {
               <div className="bg-yellow-400 p-1.5 sm:p-2 rounded-lg">
                 <Smartphone className="h-5 w-5 sm:h-6 sm:w-6 text-gray-900" />
               </div>
-              <h1 className="text-lg sm:text-xl font-bold">TechFix Pro</h1>
+              <h1 className="text-lg sm:text-xl font-bold">Smartphonecity</h1>
             </button>
           </div>
           

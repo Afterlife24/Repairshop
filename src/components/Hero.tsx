@@ -126,7 +126,10 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToBooking }) => {
               <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4">
                 <div className="flex items-center text-xs text-gray-700">
                   <MapPin className="h-3 w-3 text-yellow-500 mr-2 flex-shrink-0" />
-                  <span className="truncate">123 Rue Tech, Plaza Centre-ville</span>
+                  <span className="truncate">Smart Phone City 
+82 Boulevard Victor Hugo
+44200 Nantes
+</span>
                 </div>
                 <div className="flex items-center text-xs text-gray-700">
                   <Clock className="h-3 w-3 text-yellow-500 mr-2 flex-shrink-0" />
@@ -165,7 +168,10 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToBooking }) => {
               <div className="space-y-1 sm:space-y-2 mb-3 sm:mb-4">
                 <div className="flex items-center text-xs text-gray-700">
                   <MapPin className="h-3 w-3 text-yellow-500 mr-2 flex-shrink-0" />
-                  <span className="truncate">456 Avenue Informatique, Quartier Tech</span>
+                  <span className="truncate">Smart Informatique
+6 Place Mangin
+44200 Nantes
+</span>
                 </div>
                 <div className="flex items-center text-xs text-gray-700">
                   <Clock className="h-3 w-3 text-yellow-500 mr-2 flex-shrink-0" />
