@@ -118,7 +118,8 @@ const Hero: React.FC<HeroProps> = ({ onNavigateToBooking }) => {
             </div>
             
             <div className="p-4 sm:p-6">
-              <h3 className="text-lg sm:text-xl font-bold mb-2 text-gray-900">Atelier de Réparation Mobile</h3>
+              <h3 className="text-lg sm:text-xl font-bold mb-2 text-gray-900">Centre de Réparation Mobile
+</h3>
               <p className="text-gray-600 text-xs sm:text-sm mb-3 sm:mb-4">
                 Remplacement d'écran, problèmes de batterie, récupération après dégâts des eaux
               </p>
