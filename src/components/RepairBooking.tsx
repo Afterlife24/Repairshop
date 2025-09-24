@@ -890,9 +890,7 @@ setTimeout(() => {
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 md:mb-4 px-4">
                   Sélectionnez les réparations à effectuer
                 </h2>
-                <p className="text-gray-400 text-xs sm:text-sm md:text-base px-4">
-                  Tous nos prix sont à jour au {new Date().toLocaleDateString('fr-FR')} et sont indiqués TTC, pièces et main-d'œuvre comprises.
-                </p>
+                
               </motion.div>
 
               {selectedRepairDoc.repairOptions.length === 0 ? (
@@ -902,34 +900,7 @@ setTimeout(() => {
               ) : (
                 <>
                   {/* Discount Banners */}
-                  <motion.div 
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6 md:mb-8"
-                  >
-                    <motion.div 
-                      variants={itemVariants}
-                      className="bg-green-600 text-white p-2 sm:p-3 md:p-4 rounded-lg"
-                    >
-                      <div className="text-lg sm:text-xl md:text-2xl font-bold">25€</div>
-                      <div className="text-xs sm:text-sm">
-                        <strong>REMISE IMMÉDIATE !</strong><br />
-                        GRÂCE AU BONUS QUALIREPAR*<br />
-                        <em>aucune action requise de votre part</em>
-                      </div>
-                    </motion.div>
-                    <motion.div 
-                      variants={itemVariants}
-                      className="bg-purple-600 text-white p-2 sm:p-3 md:p-4 rounded-lg"
-                    >
-                      <div className="text-lg sm:text-xl md:text-2xl font-bold">20€</div>
-                      <div className="text-xs sm:text-sm">
-                        <strong>REMISE SUR VOTRE DEUXIÈME RÉPARATION</strong><br />
-                        <em>offre cumulable avec le bonus qualifié</em>
-                      </div>
-                    </motion.div>
-                  </motion.div>
+                  
 
                   <motion.div 
                     initial={{ opacity: 0 }}

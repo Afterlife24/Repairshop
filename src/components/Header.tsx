@@ -83,7 +83,7 @@ const Header: React.FC<HeaderProps> = ({ onBackToHome }) => {
                 onClick={handleBookRepair}
                 className="bg-yellow-400 hover:bg-yellow-500 text-gray-900 px-4 py-2 rounded-lg font-semibold transition-colors text-left text-sm sm:text-base"
               >
-                Réserver une Réparation
+                Smart Mepermatic
               </button>
             </div>
           </nav>
