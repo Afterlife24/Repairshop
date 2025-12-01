@@ -41,8 +41,8 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ type, title, onProduc
 //     setError(null);
     
 //     const endpoint = type === 'mobile' 
-//       ? 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/mobile' 
-//       : 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/laptop';
+//       ? 'https://edmnkjhrrk.execute-api.eu-west-3.amazonaws.com/api/products/mobile' 
+//       : 'https://edmnkjhrrk.execute-api.eu-west-3.amazonaws.com/api/products/laptop';
 
 //     console.log("yesss")
     
@@ -64,7 +64,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({ type, title, onProduc
 //       ...product,
 //       image: product.image.startsWith('http')
 //   ? product.image
-//   : `https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com${product.image.startsWith('/') ? '' : '/'}${product.image}`
+//   : `https://edmnkjhrrk.execute-api.eu-west-3.amazonaws.com${product.image.startsWith('/') ? '' : '/'}${product.image}`
 
 //     }));
     
@@ -85,8 +85,8 @@ const fetchProducts = useCallback(async () => {
     setError(null);
     
     const endpoint = type === 'mobile' 
-      ? 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/mobiles' 
-      : 'https://rppe4wbr3k.execute-api.eu-west-3.amazonaws.com/api/products/laptops';
+      ? 'https://edmnkjhrrk.execute-api.eu-west-3.amazonaws.com/api/products/mobiles' 
+      : 'https://edmnkjhrrk.execute-api.eu-west-3.amazonaws.com/api/products/laptops';
 
     const response = await fetch(endpoint, {
       headers: {
