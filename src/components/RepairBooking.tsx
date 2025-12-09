@@ -51,7 +51,7 @@ interface RepairBookingProps {
   onBackToHome?: () => void;
 }
 
-const API_BASE_URL = 'https://edmnkjhrrk.execute-api.eu-west-3.amazonaws.com/api';
+const API_BASE_URL = 'https://1g7akn1q1i.execute-api.eu-west-3.amazonaws.com/api';
 
 const RepairBooking: React.FC<RepairBookingProps> = ({ deviceType, onBackToHome }) => {
   // Devices array
